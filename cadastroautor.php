@@ -1,32 +1,26 @@
 <?php
-//conectar com banco de dados
 $conectar = mysqli_connect('localhost', 'root', '', 'livraria');
 
-// Verificar conexão
 if (mysqli_connect_errno()) {
     echo "Falha ao conectar ao MySQL: " . mysqli_connect_error();
     exit();
 }
 
 if (isset($_POST['Gravar'])) {
-    //receber as variaveis do HTML
     $nome = $_POST['nome'];
     $codautor = $_POST['codautor'];
     $pais = $_POST['pais'];
 
-    // Sanitizar entradas para prevenir SQL Injection
     $nome = mysqli_real_escape_string($conectar, $nome);
     $codautor = mysqli_real_escape_string($conectar, $codautor);
     $pais = mysqli_real_escape_string($conectar, $pais);
 
-    // Verificar se o código do autor já existe
     $sql = "SELECT * FROM autor WHERE codautor = '$codautor'";
     $resultado = mysqli_query($conectar, $sql);
 
     if (mysqli_num_rows($resultado) > 0) {
         echo "Este código de autor já está cadastrado!";
     } else {
-        // Se não existir, inserir os dados
         $sql = "INSERT INTO autor (codautor, nome, pais) VALUES ('$codautor', '$nome', '$pais')";
         if (mysqli_query($conectar, $sql)) {
             echo "Dados cadastrados com sucesso!";
@@ -35,12 +29,10 @@ if (isset($_POST['Gravar'])) {
         }
     }
 } else if (isset($_POST['Alterar'])) {
-    //receber as variaveis do HTML
     $nome = $_POST['nome'];
     $codautor = $_POST['codautor'];
     $pais = $_POST['pais'];
 
-    // Sanitizar entradas
     $nome = mysqli_real_escape_string($conectar, $nome);
     $codautor = mysqli_real_escape_string($conectar, $codautor);
     $pais = mysqli_real_escape_string($conectar, $pais);
@@ -62,10 +54,8 @@ if (isset($_POST['Gravar'])) {
         }
     }
 } else if (isset($_POST['Excluir'])) {
-    //receber as variaveis do HTML
     $codautor = $_POST['codautor'];
 
-    // Sanitizar entrada
     $codautor = mysqli_real_escape_string($conectar, $codautor);
 
     $sql_verifica = "SELECT codautor FROM autor WHERE codautor = '$codautor'";
@@ -102,6 +92,5 @@ if (isset($_POST['Gravar'])) {
     }
 }
 
-// Fechar conexão
 mysqli_close($conectar);
 ?>

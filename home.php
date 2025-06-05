@@ -2,12 +2,10 @@
 session_start();
 $connect = new mysqli('localhost', 'root', '', 'livraria');
 
-// Verificar conexão
 if ($connect->connect_error) {
     die("Falha na conexão: " . $connect->connect_error);
 }
 
-// Definir charset
 $connect->set_charset("utf8");
 ?>
 
@@ -22,10 +20,8 @@ $connect->set_charset("utf8");
 </head>
 <body>
     <?php
-    // Exibir mensagem de sucesso se existir
     if(isset($_SESSION['msg_sucesso'])) {
         echo '<div class="mensagem-sucesso">'.$_SESSION['msg_sucesso'].'</div>';
-        // Limpar a mensagem após exibir
         unset($_SESSION['msg_sucesso']);
     }
     ?>
@@ -34,11 +30,41 @@ $connect->set_charset("utf8");
         <div class="logo">
             <img src="logolivraria.png" width="200" height="120" alt="Logo Entre Linhas">
         </div>
+
+        <section id="banner">
+        <div class="slide">
+            <img src="propaganda3.png" alt="Propaganda1">
+            <div class="info">Oncologia de Precisão</div>
+        </div>
+        <div class="slide">
+            <img src="propaganda1.png" alt="Propaganda2">
+            <div class="info">100 Dúvidas de Carreira</div>
+        </div>
+        <div class="slide">
+            <img src="propaganda5.png" alt="Propaganda3">
+            <div class="info">68° Feira do Livro</div>
+        </div>
+        <div class="slide">
+            <img src="propaganda4.png" alt="Propaganda4">
+            <div class="info">Alto Pantanal</div>
+        </div>
+        <div class="slide">
+            <img src="propaganda2.png" alt="Propaganda5">
+            <div class="info">Empregado Doméstico</div>
+        </div>
+        <button id="prev">&#10094;</button>
+        <button id="next">&#10095;</button>
+
+        <div class="progress-bar">
+            <div class="progress-bar-fill"></div>
+        </div>
+    </section>
+
+
         <div class="nav-links">
             <a href="carrinho.php" class="carrinho-link">
                 🛒 Carrinho:
                 <?php
-                // Mostrar quantidade de itens no carrinho
                 if(isset($_SESSION['carrinho'])) {
                     $total_itens = 0;
                     foreach($_SESSION['carrinho'] as $item) {
@@ -62,7 +88,6 @@ $connect->set_charset("utf8");
     
     <form name="formulario" method="post" action="" class="search-form">
         <div class="form-group">
-            <!------ pesquisar Categorias/Gêneros -------------->
             <div class="form-control">
                 <label for="categoria">Gênero</label>
                 <select name="categoria" id="categoria">
@@ -82,7 +107,6 @@ $connect->set_charset("utf8");
                 </select>
             </div>
             
-            <!------ pesquisar editoras -------------->
             <div class="form-control">
                 <label for="editora">Editora</label>
                 <select name="editora" id="editora">
@@ -102,7 +126,6 @@ $connect->set_charset("utf8");
                 </select>
             </div>
             
-            <!------ pesquisar autores -------------->
             <div class="form-control">
                 <label for="autor">Autor</label>
                 <select name="autor" id="autor">
@@ -122,7 +145,6 @@ $connect->set_charset("utf8");
                 </select>
             </div>
 
-            <!------ pesquisar por título -------------->
             <div class="form-control">
                 <label for="titulo">Título do Livro</label>
                 <input type="text" name="titulo" id="titulo" placeholder="Digite o título do livro..." value="<?php echo isset($_POST['titulo']) ? htmlspecialchars($_POST['titulo']) : ''; ?>">
@@ -136,7 +158,6 @@ $connect->set_charset("utf8");
 
     <?php
     if (isset($_POST['pesquisar'])) {
-        // Verifica que as opções foram selecionadas ou não
         $editora = (empty($_POST['editora'])) ? 'null' : intval($_POST['editora']);
         $categoria = (empty($_POST['categoria'])) ? 'null' : intval($_POST['categoria']);
         $autor = (empty($_POST['autor'])) ? 'null' : intval($_POST['autor']);
@@ -150,7 +171,6 @@ $connect->set_charset("utf8");
                        LEFT JOIN categoria c ON l.codcategoria = c.codcategoria
                        WHERE 1=1";
         
-        // Adiciona condições de filtro quando necessário
         if ($editora != 'null') {
             $sql_livros .= " AND l.codeditora = $editora";
         }
@@ -169,15 +189,12 @@ $connect->set_charset("utf8");
         
         $sql_livros .= " ORDER BY l.titulo";
         
-        // Executar a consulta
         $seleciona_livros = $connect->query($sql_livros);
 
-        // Verificar se houve erro na consulta
         if (!$seleciona_livros) {
             echo '<div class="erro"><h2>Erro na consulta: ' . $connect->error . '</h2></div>';
             echo '<div class="debug"><p>SQL executado: ' . htmlspecialchars($sql_livros) . '</p></div>';
         } else {
-            // Mostrar as informações dos livros
             if($seleciona_livros->num_rows == 0) {
             echo '<div class="no-results"><h2>📚 Desculpe, mas sua busca não retornou resultados...</h2><p>Tente ajustar seus filtros de pesquisa.</p></div>';
         } else {
@@ -192,7 +209,6 @@ $connect->set_charset("utf8");
                 
                 echo "<div class='livro-content'>";
                 
-                // Foto1 do livro
                 echo "<div class='capa-container'>";
                 if (!empty($dados->foto1)) {
                     echo '<img src="fotos/'.htmlspecialchars($dados->foto1).'" height="200" width="150" alt="Capa do livro" class="capa-livro" />';
@@ -209,7 +225,6 @@ $connect->set_charset("utf8");
                 echo "<p><strong>📄 Páginas:</strong> ".($dados->nrpaginas ?: 'Não informado')."</p>";
                 echo "<p class='preco'><strong>💰 Preço:</strong> R$ ".number_format($dados->preco, 2, ',', '.')."</p>";
                 
-                // Resenha (se existir)
                 if (!empty($dados->resenha)) {
                     echo "<div class='sinopse'>";
                     echo "<p><strong>📋 Resenha:</strong></p>";
@@ -220,14 +235,12 @@ $connect->set_charset("utf8");
                 
                 echo "</div>";
                 
-                // Foto2 adicional (se existir)
                 if (!empty($dados->foto2)) {
                     echo "<div class='foto-adicional'>";
                     echo '<img src="fotos/'.htmlspecialchars($dados->foto2).'" height="120" width="90" alt="Foto adicional do livro" />';
                     echo "</div>";
                 }
                 
-                // Botão de adicionar ao carrinho
                 echo "<div class='livro-acoes'>";
                 echo "<form method='post' action='addcarrinho.php'>";
                 echo "<input type='hidden' name='codlivro' value='".$dados->codlivro."'>";
@@ -253,5 +266,6 @@ $connect->set_charset("utf8");
     <footer class="footer">
         <p>&copy; 2025 Entre Linhas - Sua Livraria Online. Todos os direitos reservados.</p>
     </footer>
+    <script src="scriptlivraria.js"></script>
 </body>
 </html>

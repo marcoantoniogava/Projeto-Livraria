@@ -1,4 +1,3 @@
-/* Reset básico */
 * {
     margin: 0;
     padding: 0;
@@ -13,27 +12,34 @@ body {
     min-height: 100vh;
 }
 
-/* Header */
 .header {
     background-color: #3c3c3c;
-    padding: 15px 20px;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     border-bottom: 2px solid #4a4a4a;
+    position: relative;
+    z-index: 20;
+}
+
+.logo {
+    padding: 1%;
 }
 
 .logo img {
     border-radius: 8px;
-    max-width: 70%;
+    max-width: 160px;
+    height: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+    padding: 1%;
 }
 
 .carrinho-link {
@@ -41,9 +47,9 @@ body {
     align-items: center;
     text-decoration: none;
     color: #cccccc;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
-    padding: 8px 16px;
+    padding: 6px 12px;
     background-color: #2c2c2c;
     border-radius: 6px;
     border: 1px solid #4a4a4a;
@@ -68,7 +74,8 @@ body {
 
 .login-link img {
     border-radius: 4px;
-    max-width: 65%;
+    max-width: 50px;
+    height: auto;
     transition: transform 0.3s ease;
 }
 
@@ -76,7 +83,108 @@ body {
     transform: scale(1.05);
 }
 
-/* Títulos principais */
+#banner {
+    position: relative;
+    width: 95%;
+    max-width: 1200px;
+    height: 400px;
+    margin: 15px auto;
+    background-color: #2c2c2c;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border: 2px solid #4a4a4a;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.slide .info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: #fff;
+    padding: 40px 30px 20px;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-align: center;
+}
+
+#prev, #next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 204, 102, 0.9);
+    color: #333;
+    border: none;
+    padding: 15px 18px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+#prev {
+    left: 20px;
+}
+
+#next {
+    right: 20px;
+}
+
+#prev:hover, #next:hover {
+    background-color: #ffcc66;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+#prev:active, #next:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: 5;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #ffdf00;
+    transition: width 5s linear;
+    box-shadow: 0 0 10px rgba(255, 223, 0, 0.6);
+}
+
 .main-title {
     text-align: center;
     color: #ffcc66;
@@ -98,7 +206,6 @@ body {
     padding-bottom: 10px;
 }
 
-/* Formulário de pesquisa */
 .search-form {
     background-color: #3c3c3c;
     padding: 30px;
@@ -166,7 +273,6 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Mensagens */
 .mensagem-sucesso {
     background-color: #4a7c59;
     color: #ffffff;
@@ -194,7 +300,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* Grid de livros */
 .livros {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -204,7 +309,6 @@ body {
     padding: 0 20px;
 }
 
-/* Card do livro */
 .livro {
     background-color: #3c3c3c;
     border: 1px solid #4a4a4a;
@@ -317,7 +421,6 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Ações do livro */
 .livro-acoes {
     padding: 20px;
     background-color: #2c2c2c;
@@ -343,7 +446,6 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Footer */
 .footer {
     background-color: #2c2c2c;
     color: #888888;
@@ -353,22 +455,30 @@ body {
     border-top: 2px solid #4a4a4a;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     .header {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 15px;
+    }
+
+    .logo img {
+        max-width: 120px;
     }
 
     .nav-links {
-        flex-direction: column;
-        width: 100%;
+        flex-direction: row;
         gap: 10px;
     }
 
     .carrinho-link {
-        justify-content: center;
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .login-link img {
+        max-width: 40px;
     }
 
     .main-title {
@@ -406,12 +516,44 @@ body {
         text-align: left;
         width: 100%;
     }
+
+    #banner {
+        width: 95%;
+        height: 250px;
+        margin: 10px auto;
+    }
+
+    .slide .info {
+        font-size: 20px;
+        padding: 30px 20px 15px;
+    }
+
+    #prev, #next {
+        padding: 12px 15px;
+        font-size: 18px;
+    }
+
+    #prev {
+        left: 10px;
+    }
+
+    #next {
+        right: 10px;
+    }
 }
 
 @media (max-width: 480px) {
     .logo img {
-        width: 150px;
-        height: 90px;
+        max-width: 100px;
+    }
+
+    .login-link img {
+        max-width: 35px;
+    }
+
+    .carrinho-link {
+        font-size: 11px;
+        padding: 3px 6px;
     }
 
     .main-title {
@@ -422,5 +564,26 @@ body {
     .sem-capa {
         width: 120px;
         height: 160px;
+    }
+
+    /* Banner mobile */
+    #banner {
+        width: 95%;
+        height: 200px;
+        margin: 8px auto;
+    }
+
+    .slide .info {
+        font-size: 16px;
+        padding: 20px 15px 10px;
+    }
+
+    #prev, #next {
+        padding: 10px 12px;
+        font-size: 16px;
+    }
+
+    .progress-bar {
+        height: 4px;
     }
 }

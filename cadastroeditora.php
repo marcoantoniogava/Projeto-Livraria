@@ -1,30 +1,24 @@
 <?php
-//conectar com banco de dados
 $conectar = mysqli_connect('localhost', 'root', '', 'livraria');
 
-// Verificar conexão
 if (mysqli_connect_errno()) {
     echo "Falha ao conectar ao MySQL: " . mysqli_connect_error();
     exit();
 }
 
 if (isset($_POST['Gravar'])) {
-    //receber as variaveis do HTML
     $nome = $_POST['nome'];
     $codeditora = $_POST['codeditora'];
 
-    // Sanitizar entradas para prevenir SQL Injection
     $nome = mysqli_real_escape_string($conectar, $nome);
     $codeditora = mysqli_real_escape_string($conectar, $codeditora);
 
-    // Verificar se o código da editora já existe
     $sql = "SELECT * FROM editora WHERE codeditora = '$codeditora'";
     $resultado = mysqli_query($conectar, $sql);
 
     if (mysqli_num_rows($resultado) > 0) {
         echo "Este código de editora já está cadastrado!";
     } else {
-        // Se não existir, inserir os dados
         $sql = "INSERT INTO editora (codeditora, nome) VALUES ('$codeditora', '$nome')";
         if (mysqli_query($conectar, $sql)) {
             echo "Dados cadastrados com sucesso!";
@@ -33,11 +27,9 @@ if (isset($_POST['Gravar'])) {
         }
     }
 } else if (isset($_POST['Alterar'])) {
-    //receber as variaveis do HTML
     $nome = $_POST['nome'];
     $codeditora = $_POST['codeditora'];
 
-    // Sanitizar entradas
     $nome = mysqli_real_escape_string($conectar, $nome);
     $codeditora = mysqli_real_escape_string($conectar, $codeditora);
 
@@ -58,10 +50,8 @@ if (isset($_POST['Gravar'])) {
         }
     }
 } else if (isset($_POST['Excluir'])) {
-    //receber as variaveis do HTML
     $codeditora = $_POST['codeditora'];
 
-    // Sanitizar entrada
     $codeditora = mysqli_real_escape_string($conectar, $codeditora);
 
     $sql_verifica = "SELECT codeditora FROM editora WHERE codeditora = '$codeditora'";
@@ -97,6 +87,5 @@ if (isset($_POST['Gravar'])) {
     }
 }
 
-// Fechar conexão
 mysqli_close($conectar);
 ?>

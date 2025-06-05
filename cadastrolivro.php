@@ -1,5 +1,4 @@
 <?php
-// Conecta com o server
 $host = 'localhost';
 $username = 'root';
 $password = '';
@@ -7,13 +6,11 @@ $database = 'livraria';
 
 $conn = new mysqli($host, $username, $password, $database);
 
-// Check na conexão
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
 if (isset($_POST['Gravar'])) {
-    // Usa prepared statements pra prevenir SQL injection
     $codlivro = $conn->real_escape_string($_POST['codlivro']);
     $titulo = $conn->real_escape_string($_POST['titulo']);
     $nrpags = $conn->real_escape_string($_POST['nrpags']);
@@ -30,43 +27,37 @@ if (isset($_POST['Gravar'])) {
         mkdir($diretorio, 0777, true);
     }
 
-    // Processa primeira imagem
     $novo_nome1 = '';
     if (isset($_FILES['foto1']) && $_FILES['foto1']['error'] == 0) {
         $filename1 = $_FILES['foto1']['name'];
         $extensao1 = pathinfo($filename1, PATHINFO_EXTENSION);
         $novo_nome1 = md5(time() . '1') . '.' . $extensao1;
         
-        // Move o arquivo para o diretório
         if (move_uploaded_file($_FILES['foto1']['tmp_name'], $diretorio . $novo_nome1)) {
             echo "Foto 1 enviada com sucesso.<br>";
         } else {
             echo "Erro ao enviar a foto 1.<br>";
-            $novo_nome1 = ''; // Garante que nenhum nome seja gravado no banco se houver falha
+            $novo_nome1 = '';
         }
     }
 
-    // Processa segunda imagem
     $novo_nome2 = '';
     if (isset($_FILES['foto2']) && $_FILES['foto2']['error'] == 0) {
         $filename2 = $_FILES['foto2']['name'];
         $extensao2 = pathinfo($filename2, PATHINFO_EXTENSION);
         $novo_nome2 = md5(time() . '2') . '.' . $extensao2;
         
-        // Move o arquivo para o diretório
         if (move_uploaded_file($_FILES['foto2']['tmp_name'], $diretorio . $novo_nome2)) {
             echo "Foto 2 enviada com sucesso.<br>";
         } else {
             echo "Erro ao enviar a foto 2.<br>";
-            $novo_nome2 = ''; // Garante que nenhum nome seja gravado no banco se houver falha
+            $novo_nome2 = '';
         }
     }
 
-    // Prepara e executa SQL statement
     $stmt = $conn->prepare("INSERT INTO livro (codlivro, titulo, nrpaginas, ano, codautor, codeditora, codcategoria, resenha, preco, foto1, foto2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     
     if ($stmt) {
-        // Observe os tipos corretos na bind_param: "isiiiiisdss"
         $stmt->bind_param("isiiiiisdss", $codlivro, $titulo, $nrpags, $ano, $codautor, $codeditora, $codcategoria, $resenha, $preco, $novo_nome1, $novo_nome2);
         
         $resultado = $stmt->execute();
@@ -85,8 +76,7 @@ if (isset($_POST['Gravar'])) {
 
 if (isset($_POST['Excluir'])) {
     $codlivro = $conn->real_escape_string($_POST['codlivro']);
-    
-    // Primeiro, recupera os nomes das fotos para excluí-las do servidor
+
     $stmt = $conn->prepare("SELECT foto1, foto2 FROM livro WHERE codlivro = ?");
     if ($stmt) {
         $stmt->bind_param("i", $codlivro);
@@ -94,7 +84,6 @@ if (isset($_POST['Excluir'])) {
         $stmt->bind_result($foto1, $foto2);
         
         if ($stmt->fetch()) {
-            // Exclua as fotos do servidor se existirem
             if (!empty($foto1) && file_exists("fotos/" . $foto1)) {
                 unlink("fotos/" . $foto1);
             }
@@ -105,7 +94,6 @@ if (isset($_POST['Excluir'])) {
         $stmt->close();
     }
     
-    // Usa prepared statement pra deletar
     $stmt = $conn->prepare("DELETE FROM livro WHERE codlivro = ?");
     
     if ($stmt) {
@@ -136,10 +124,8 @@ if (isset($_POST['Alterar'])) {
     $resenha = $conn->real_escape_string($_POST['resenha']);
     $preco = $conn->real_escape_string($_POST['preco']);
     
-    // Verifica se novas fotos foram enviadas
     $diretorio = "fotos/";
     
-    // Obter as fotos atuais
     $stmt = $conn->prepare("SELECT foto1, foto2 FROM livro WHERE codlivro = ?");
     $foto1_atual = '';
     $foto2_atual = '';
@@ -152,49 +138,42 @@ if (isset($_POST['Alterar'])) {
         $stmt->close();
     }
     
-    // Processar foto1 se foi enviada
-    $novo_nome1 = $foto1_atual; // Mantém o nome atual se não houver nova foto
+    $novo_nome1 = $foto1_atual;
     if (isset($_FILES['foto1']) && $_FILES['foto1']['error'] == 0) {
         $filename1 = $_FILES['foto1']['name'];
         $extensao1 = pathinfo($filename1, PATHINFO_EXTENSION);
         $novo_nome1 = md5(time() . '1') . '.' . $extensao1;
         
-        // Excluir a foto antiga se existir
         if (!empty($foto1_atual) && file_exists($diretorio . $foto1_atual)) {
             unlink($diretorio . $foto1_atual);
         }
         
-        // Move o arquivo para o diretório
         if (move_uploaded_file($_FILES['foto1']['tmp_name'], $diretorio . $novo_nome1)) {
             echo "Nova foto 1 enviada com sucesso.<br>";
         } else {
             echo "Erro ao enviar a nova foto 1.<br>";
-            $novo_nome1 = $foto1_atual; // Mantém o nome atual em caso de falha
+            $novo_nome1 = $foto1_atual;
         }
     }
     
-    // Processar foto2 se foi enviada
-    $novo_nome2 = $foto2_atual; // Mantém o nome atual se não houver nova foto
+    $novo_nome2 = $foto2_atual;
     if (isset($_FILES['foto2']) && $_FILES['foto2']['error'] == 0) {
         $filename2 = $_FILES['foto2']['name'];
         $extensao2 = pathinfo($filename2, PATHINFO_EXTENSION);
         $novo_nome2 = md5(time() . '2') . '.' . $extensao2;
         
-        // Excluir a foto antiga se existir
         if (!empty($foto2_atual) && file_exists($diretorio . $foto2_atual)) {
             unlink($diretorio . $foto2_atual);
         }
         
-        // Move o arquivo para o diretório
         if (move_uploaded_file($_FILES['foto2']['tmp_name'], $diretorio . $novo_nome2)) {
             echo "Nova foto 2 enviada com sucesso.<br>";
         } else {
             echo "Erro ao enviar a nova foto 2.<br>";
-            $novo_nome2 = $foto2_atual; // Mantém o nome atual em caso de falha
+            $novo_nome2 = $foto2_atual;
         }
     }
     
-    // Usa prepared statement pro update
     $stmt = $conn->prepare("UPDATE livro SET titulo = ?, nrpaginas = ?, resenha = ?, ano = ?, codautor = ?, codeditora = ?, codcategoria = ?, preco = ?, foto1 = ?, foto2 = ? WHERE codlivro = ?");
     
     if ($stmt) {
@@ -215,7 +194,6 @@ if (isset($_POST['Alterar'])) {
 }
 
 if (isset($_POST['Pesquisar'])) {
-    // Usa prepared statement pra pesquisa
     $stmt = $conn->prepare("SELECT codlivro, titulo, nrpaginas, ano, codautor, codeditora, codcategoria, resenha, preco, foto1, foto2 FROM livro");
     
     if ($stmt) {
